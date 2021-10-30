@@ -1,0 +1,12 @@
+{
+    "name": "rafaelzapata/mvc-basic",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "require": {
+        "squizlabs/php_codesniffer": "*",
+        "william-costa/dot-env": "^0.1.0"
+    }
+}

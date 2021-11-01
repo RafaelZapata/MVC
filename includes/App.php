@@ -30,4 +30,13 @@ View::init([
 ]);
 
 // DEFINE O MAPEAMENTO DE MIDDLEWARES
-Queue::setMap([]);
+Queue::setMap([
+    'maintenance' => App\Http\Middleware\Maintenance::class,
+    'required-admin-logout' => App\Http\Middleware\RequireAdminLogout::class,
+    'required-admin-login' => App\Http\Middleware\RequireAdminLogin::class
+]);
+
+// DEFINE O MAPEAMENTO DE MIDDLEWARES PADRÕES DE TODAS AS ROTAS
+Queue::setDefault([
+    'maintenance'
+]);

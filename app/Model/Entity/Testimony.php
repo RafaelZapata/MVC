@@ -67,4 +67,34 @@ class Testimony
     {
         return (new Database('depoimentos'))->select($where, $order, $limit, $fields);
     }
+
+    public static function getTestimonyById($id)
+    {
+        return self::getTestimonies('id = ' . $id)->fetchObject(self::class);
+    }
+
+    /**
+     * Método responsável por atualizar os dados no banco da instância atual
+     *
+     * @return boolean
+     */
+    public function atualizar()
+    {
+        // ATUALIZA O DEPOIMENTO NO BANCO DE DADOS
+        return (new Database('depoimentos'))->update('id = ' . $this->id, [
+            'nome'     => $this->nome,
+            'mensagem' => $this->mensagem
+        ]);
+    }
+
+    /**
+     * Método responsável por deletar os dados no banco da instância atual
+     *
+     * @return boolean
+     */
+    public function deletar()
+    {
+        // ATUALIZA O DEPOIMENTO NO BANCO DE DADOS
+        return (new Database('depoimentos'))->delete('id = ' . $this->id);
+    }
 }

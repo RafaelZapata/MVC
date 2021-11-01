@@ -9,6 +9,12 @@ use Closure;
 class Queue
 {
     /**
+     * Mapeamento dos middlewares que serão carregados em todas as rotas
+     *
+     * @var array
+     */
+    private static $default = [];
+    /**
      * Mapeamento de middlewares
      *
      * @var array
@@ -44,7 +50,7 @@ class Queue
      */
     public function __construct($middlewares, $controller, $controllerArgs)
     {
-        $this->middlewares    = $middlewares;
+        $this->middlewares    = array_merge(self::$default, $middlewares);
         $this->controller     = $controller;
         $this->controllerArgs = $controllerArgs;
     }
@@ -60,6 +66,16 @@ class Queue
     }
 
     /**
+     * Método responsável por definir mapear os middlewares padrões
+     *
+     * @param array $default
+     */
+    public static function setDefault($default)
+    {
+        self::$default = $default;
+    }
+
+    /**
      * Método responsável por executar o próximo nível da fila de middlewares
      *
      * @param Request $request
@@ -72,10 +88,21 @@ class Queue
             return call_user_func_array($this->controller, $this->controllerArgs);
         }
 
+        // MIDDLEWARE
         $middleware = array_shift($this->middlewares);
 
+        // VERIFICA O MAPEAMENTO
         if (!isset(self::$map[$middleware])) {
-            throw new Exception('Problemas ao passar middleware da requisição', 500);
+            throw new Exception('Problemas ao processar o middleware da requisição', 500);
         }
+
+        // NEXT
+        $queue = $this;
+        $next  = function ($request) use ($queue) {
+            return $queue->next($request);
+        };
+
+        // EXECUTA O MIDDLEWARE
+        return (new self::$map[$middleware]())->handle($request, $next);
     }
 }

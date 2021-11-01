@@ -51,7 +51,7 @@ class Database
         }
     }
 
-    public function select($where, $order, $limit, $fields = '*')
+    public function select($where = null, $order = null, $limit = null, $fields = '*')
     {
         $where = strlen($where) ? 'WHERE ' . $where : '';
         $order = strlen($order) ? 'ORDER BY ' . $order : '';
@@ -77,7 +77,7 @@ class Database
     {
         $fields = array_keys($params);
 
-        $query = 'UPDATE ' . $this->table . ' SET ' . implode('=?', $fields) . ' =? WHERE ' . $where;
+        $query = 'UPDATE ' . $this->table . ' SET ' . implode('=?,', $fields) . '=? WHERE ' . $where;
 
         $this->execute($query, array_values($params));
 
